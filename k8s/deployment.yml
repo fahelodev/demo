@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8-service-dummy
+  name: demo-microservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: k8-service-dummy
+      app: demo-microservice
   template:
     metadata:
       labels:
-        app: k8-service-dummy
+        app: demo-microservice
     spec:
       containers:
-        - name: service-dummy
-          image: service-dummy:latest
+        - name: service-app
+          image: service-app:latest
           imagePullPolicy: Never
