@@ -24,7 +24,7 @@ stages:
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
-        containerRegistry: 'DockerServiceConnection'
+        containerRegistry: 'containerRegistryServiceConnection'
         repository: '$(imageRepository)'
         command: 'buildAndPush'
         Dockerfile: '$(dockerfilePath)'
@@ -60,11 +60,11 @@ stages:
       - task: KubernetesManifest@0
         inputs:
           action: 'createSecret'
-          kubernetesServiceConnection: 'K8sServiceConnection'
+          kubernetesServiceConnection: 'k8sServiceConnection'
           namespace: 'default'
           secretType: 'dockerRegistry'
           secretName: '$(acrsecret)'
-          dockerRegistryEndpoint: 'DockerServiceConnection'
+          dockerRegistryEndpoint: 'containerRegistryServiceConnection'
       - task: KubernetesManifest@0
         inputs:
           action: 'deploy'
@@ -73,3 +73,4 @@ stages:
           manifests: |
             $(Pipeline.Workspace)/manifests/deployment.yml
             $(Pipeline.Workspace)/manifests/service.yml
+          rolloutStatusTimeout: '120'
