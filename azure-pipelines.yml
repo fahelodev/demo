@@ -10,7 +10,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build Docker
+- stage: Build_Docker
   displayName: Build Docker and Push in Container Registry
   jobs:
   - job: Build
@@ -39,7 +39,7 @@ stages:
         publishLocation: 'pipeline'
 - stage: Deploy
   displayName: Deploy to Dev
-  dependsOn: Build
+  dependsOn: Build_Docker
   variables:
     acrsecret: k8sexampleacrauth
   jobs:
