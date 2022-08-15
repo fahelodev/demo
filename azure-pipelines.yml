@@ -5,17 +5,16 @@ resources:
 
 variables:
   imageRepository: 'microservices'
-  containerRegistry: 'containerservices.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
   vmImageName: 'ubuntu-latest'
 
 stages:
-- stage: Build
-  displayName: Build and push stage
+- stage: Build Docker
+  displayName: Build Docker and Push in Container Registry
   jobs:
   - job: Build
-    displayName: Build
+    displayName: Build Docker
     pool:
       vmImage: '$(vmImageName)'
       name: Default
@@ -33,6 +32,7 @@ stages:
           $(tag)
           latest
     - task: PublishPipelineArtifact@1
+      displayName: publish the manifest k8s files to the pipeline
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/k8s'
         artifact: 'manifests'
