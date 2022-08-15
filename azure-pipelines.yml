@@ -51,6 +51,7 @@ stages:
         demands:
         - agent.name -equals pc-fahelo
       steps:
+
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'current'
@@ -69,7 +70,10 @@ stages:
           action: 'deploy'
           kubernetesServiceConnection: 'K8sServiceConnection'
           namespace: 'default'
+          containers: 'microservices'
+          rolloutStatusTimeout: '120'
           manifests: |
             $(Pipeline.Workspace)/manifests/deployment.yml
             $(Pipeline.Workspace)/manifests/service.yml
-          rolloutStatusTimeout: '120'
+          
+      
