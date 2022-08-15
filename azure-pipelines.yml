@@ -17,6 +17,7 @@ stages:
   - job: Build
     displayName: Build
     pool:
+      vmImage: '$(vmImageName)'
       name: Default
       demands:
       - agent.name -equals pc-fahelo
@@ -28,9 +29,7 @@ stages:
         repository: '$(imageRepository)'
         command: 'buildAndPush'
         Dockerfile: '$(dockerfilePath)'
-        tags: |
-          $(tag)
-          latest
+        tags: '$(tag)'
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/k8s'
@@ -45,9 +44,11 @@ stages:
     - job: Deploy
       displayName: Deploy to AKS
       pool:
+        vmImage: '$(vmImageName)'
         name: Default
         demands:
         - agent.name -equals pc-fahelo
+        
       steps:
       - task: DownloadPipelineArtifact@2
         inputs:
