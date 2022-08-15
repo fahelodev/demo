@@ -7,7 +7,7 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   imageRepository: 'microservices'
-  containerRegistry: 'ccapicr.azurecr.io'
+  containerRegistry: 'containerservices.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
 
