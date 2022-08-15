@@ -5,9 +5,11 @@ resources:
 
 variables:
   imageRepository: 'microservices'
+  containerRegistry: 'fahelocr.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
   vmImageName: 'ubuntu-latest'
+  acrsecret: k8sexampleacrauth
 
 stages:
 - stage: Build_Docker
@@ -40,8 +42,6 @@ stages:
 - stage: Deploy
   displayName: Deploy to Dev
   dependsOn: Build_Docker
-  variables:
-    acrsecret: k8sexampleacrauth
   jobs:
     - job: Deploy
       displayName: Deploy to AKS
@@ -72,5 +72,8 @@ stages:
           manifests: |
             $(Pipeline.Workspace)/manifests/deployment.yml
             $(Pipeline.Workspace)/manifests/service.yml
+          containers: |
+            $(containerRegistry)/$(imageRepository):$(tag)'
+          imagePullSecrets: '$(acrsecret)'
           
       
