@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-microservice
+  name: service-microservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demo-microservice
+      app: service-microservice
   template:
     metadata:
       labels:
-        app: demo-microservice
+        app: service-microservice
     spec:
       containers:
-        - name: service-app
-          image: service-app:latest
+        - name: microservices
+          image: microservices:latest
           imagePullPolicy: Never
