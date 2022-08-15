@@ -1,18 +1,13 @@
 trigger:
 - main
-
-
 resources:
 - repo: self
 
 variables:
-  # Container registry service connection established during pipeline creation
   imageRepository: 'microservices'
   containerRegistry: 'containerservices.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-
-  # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
 stages:
@@ -22,20 +17,11 @@ stages:
   - job: Build
     displayName: Build
     pool:
+      vmImage: '$(vmImageName)'
       name: Default
       demands:
       - agent.name -equals pc-fahelo
     steps:
-    - task: Maven@3
-      inputs:
-        mavenPomFile: 'pom.xml'
-        publishJUnitResults: false
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.11'
-        mavenVersionOption: 'Default'
-        mavenAuthenticateFeed: false
-        effectivePomSkip: false
-        sonarQubeRunAnalysis: false
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
@@ -45,7 +31,7 @@ stages:
         Dockerfile: '$(dockerfilePath)'
         tags: |
           $(tag)
-          lastest
+          latest
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/k8s'
@@ -60,9 +46,11 @@ stages:
     - job: Deploy
       displayName: Deploy to AKS
       pool:
+        vmImage: '$(vmImageName)'
         name: Default
         demands:
         - agent.name -equals pc-fahelo
+        
       steps:
       - task: DownloadPipelineArtifact@2
         inputs:
