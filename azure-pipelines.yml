@@ -16,10 +16,10 @@ stages:
   - job: Build
     displayName: Build Docker
     pool:
-      vmImage: '$(vmImageName)'
-      name: Default
-      demands:
-      - agent.name -equals pc-fahelo
+        name: Default
+        vmImage: '$(vmImageName)'
+        demands:
+        - agent.name -equals pc-fahelo
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -46,12 +46,12 @@ stages:
     - job: Deploy
       displayName: Deploy to AKS
       pool:
-        vmImage: '$(vmImageName)'
         name: Default
+        vmImage: '$(vmImageName)'
         demands:
         - agent.name -equals pc-fahelo
-        
       steps:
+
       - task: DownloadPipelineArtifact@2
         inputs:
           buildType: 'current'
@@ -70,7 +70,10 @@ stages:
           action: 'deploy'
           kubernetesServiceConnection: 'K8sServiceConnection'
           namespace: 'default'
+          containers: 'microservices'
+          rolloutStatusTimeout: '120'
           manifests: |
             $(Pipeline.Workspace)/manifests/deployment.yml
             $(Pipeline.Workspace)/manifests/service.yml
-          rolloutStatusTimeout: '120'
+          
+      
