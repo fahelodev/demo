@@ -14,5 +14,5 @@ spec:
     spec:
       containers:
         - name: microservices
-          image: fahelocr.azurecr.io/microservices:latest
+          image: fahelocr.azure.io/microservices:56
           imagePullPolicy: Never
