@@ -14,5 +14,5 @@ spec:
     spec:
       containers:
         - name: microservices
-          image: microservices:latest
+          image: microservices:36
           imagePullPolicy: Never
