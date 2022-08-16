@@ -74,7 +74,7 @@ stages:
           manifests: |
             $(Pipeline.Workspace)/manifests/deployment.yml
             $(Pipeline.Workspace)/manifests/service.yml
-          containers: '$(containerRegistry)/$(imageRepository):$(tag)'''
+          containers: '$(containerRegistry)/$(imageRepository):$(tag)'
           imagePullSecrets: '$(acrsecret)'
           rolloutStatusTimeout: '120'
           
