@@ -9,7 +9,7 @@ variables:
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
   vmImageName: 'ubuntu-latest'
-  acrsecret: k8sexampleacrauth
+  acrsecret: tsoftacr
 
 stages:
 - stage: Build_Docker
@@ -18,10 +18,7 @@ stages:
   - job: Build
     displayName: Build Docker
     pool:
-        name: Default
         vmImage: '$(vmImageName)'
-        demands:
-        - agent.name -equals pc-fahelo
     steps:
     - task: Docker@2
       displayName: Build and push an image to container registry
@@ -34,31 +31,28 @@ stages:
           $(tag)
           latest
     - task: PublishPipelineArtifact@1
-      displayName: publish the manifest k8s files to the pipeline
+      displayName: Publish manifest k8s files to pipeline
       inputs:
         targetPath: '$(Pipeline.Workspace)/s/k8s'
         artifact: 'manifests'
         publishLocation: 'pipeline'
 - stage: Deploy
-  displayName: Deploy to Dev
+  displayName: Deploy to Azure Container Registry
   dependsOn: Build_Docker
   jobs:
     - job: Deploy
       displayName: Deploy to AKS
       pool:
-        name: Default
         vmImage: '$(vmImageName)'
-        demands:
-        - agent.name -equals pc-fahelo
       steps:
       - task: DownloadPipelineArtifact@2
-        displayName: disponibilizar manifiesto k8s
+        displayName: Download manifests files
         inputs:
           buildType: 'current'
           artifactName: 'manifests'
           targetPath: '$(Pipeline.Workspace)/manifests'
       - task: KubernetesManifest@0
-        displayName: crear secreto para acceder a ACR
+        displayName: create a secret
         inputs:
           action: 'createSecret'
           kubernetesServiceConnection: 'k8sServiceConnection'
@@ -67,6 +61,7 @@ stages:
           secretName: '$(acrsecret)'
           dockerRegistryEndpoint: 'containerRegistryServiceConnection'
       - task: KubernetesManifest@0
+        displayName: Deploy to k8s fahelo AKS
         inputs:
           action: 'deploy'
           kubernetesServiceConnection: 'k8sServiceConnection'
@@ -74,8 +69,7 @@ stages:
           manifests: |
             $(Pipeline.Workspace)/manifests/deployment.yml
             $(Pipeline.Workspace)/manifests/service.yml
-          containers: '$(containerRegistry)/$(imageRepository):$(tag)'''
+          containers: '$(containerRegistry)/$(imageRepository):$(tag)'
           imagePullSecrets: '$(acrsecret)'
-          rolloutStatusTimeout: '120'
           
       
