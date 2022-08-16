@@ -8,6 +8,6 @@ public class RootController {
 
     @GetMapping("/")
     public String index(){
-        return "RestApi";
+        return "DEMO - AZURE - KUBERNETES - DESPLIEGUE CONTINUO";
     }
 }

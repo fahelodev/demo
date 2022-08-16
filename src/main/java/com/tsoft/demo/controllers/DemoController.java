@@ -8,7 +8,7 @@ import java.util.HashMap;
 @RestController
 public class DemoController {
 
-    @GetMapping("/Demo")
+    @GetMapping("/health-check")
     public HashMap<String, String> index() {
         HashMap<String, String> status = new HashMap<>();
         status.put("status", "ok");
