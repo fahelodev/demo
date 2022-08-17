@@ -8,6 +8,6 @@ public class RootController {
 
     @GetMapping("/")
     public String index(){
-        return "DEMO - AZURE - KUBERNETES - DESPLIEGUE CONTINUO - CAJA COMPENSACION LOS ANDES - TSOFT";
+        return "DEMO - AZURE - KUBERNETES - DESPLIEGUE CONTINUO";
     }
 }
