@@ -1,3 +1,4 @@
 FROM adoptopenjdk:11-jre-hotspot
-COPY target/*.jar demo.jar
-CMD ["java","-jar","demo.jar"]
+COPY target/*.jar java-api.jar
+EXPOSE 80
+CMD java -jar java-api.jar
